@@ -5,54 +5,41 @@
 var stringifyJSON = function(obj) {
 
 
-  if (typeof obj != "object"){
-    var result;
+  if (typeof obj != "object" || obj===null){ //entries that aren't objects
 
     if(typeof obj === "string"){
-      result = '"' + String(obj) + '"'
-      return result;
-    }else if(typeof obj === "number" || typeof obj === "boolean"){
-      return String(obj)
+      obj = '"' + String(obj) + '"';
     }
-    else if (typeof obj === "null"){
-      return null
-    }
-    else{
-      result = '"' + String(obj) + '"'
-      return result;
-    }
+
+    return String(obj)
   }
-  else {
-    var arrayType = (Object.prototype.toString.call(obj) === '[object Array]');
-    var objectType = (Object.prototype.toString.call(obj) === '[object Object]');
+  else{ //entries that are objects
     var newArray = []
+    var item;
 
     for(item in obj){
       var value = obj[item];
+      if(typeof value === 'function' || typeof value ==='undefined'){
+        //this is hacky, try to come back and fix this
+        return '{}';
+      }
       var type = typeof value;
 
-      if(Object.prototype.toString.call(value) === '[object Object]'){
-        newArray.push('"' + item + '"' + ':' + stringifyJSON(value))
-      }
-      else if (Object.prototype.toString.call(value) === '[object Array]'){
-        newArray.push('"' + item + '"' + ':' + stringifyJSON(value))
+      value = stringifyJSON(value);
+
+      if(obj && obj.constructor === Array){
+        newArray.push(value)
       }
       else{
-        value = stringifyJSON(value);
-
-        if(arrayType){
-          newArray.push(value)
-        }
-        else{
-          newArray.push('"' + item + '"' + ':' + value)
-        }
+        newArray.push('"' + item + '"' + ':' + value)
       }
     }
 
-    if(arrayType){
+
+    if(obj && obj.constructor === Array){
       return "[" + newArray + "]";
     }
-    else if(objectType) {
+    else if(obj && obj.constructor === Object) {
       return "{" + newArray + "}"
     }
     else{
