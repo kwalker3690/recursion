@@ -4,29 +4,36 @@
 // };
 
 // But instead we're going to implement it from scratch:
-var result = [];
 
-var getElementsByClassName = function(classTitle){
+var getElementsByClassName = function (classTitle) {
 	var targetElement;
 
-	if (arguments[1]){
+	if (arguments[1]) {
 		targetElement = arguments[1]
-	}else{
-		targetElement = document.body;
 	}
 
-	var targetElementNodes = targetElement.childNodes;
+	else {
+		targetElement = document;
+	}
 
-	for(var i=0; i<targetElementNodes.length; i++){
+	//have to include the body, not just the childNodes
+	var targetElementNodes = targetElement.childNodes;
+	var result = [];
+
+	for (var i=0; i<targetElementNodes.length; i++) {
 		var value = targetElementNodes[i]
 		var classes = value.classList;
 
+
 		if(classes && classes.contains(classTitle)){
 			result.push(value);
+			console.log('value');
+			console.log(value);
 		}
 
-		getElementsByClassName(classTitle, value);
+		result = result.concat(getElementsByClassName.call(this, classTitle, value));
 	}
-	return result
+
+	return result;
 
 };
