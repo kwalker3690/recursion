@@ -4,8 +4,9 @@
 // };
 
 // But instead we're going to implement it from scratch:
+var result = [];
+
 var getElementsByClassName = function(classTitle){
-	var result = [];
 	var targetElement;
 
 	if (arguments[1]){
@@ -20,14 +21,12 @@ var getElementsByClassName = function(classTitle){
 		var value = targetElementNodes[i]
 		var classes = value.classList;
 
-		getElementsByClassName(classTitle, value);
-
 		if(classes && classes.contains(classTitle)){
-			result.push(value)
+			result.push(value);
 		}
 
-		var newArray = result;
+		getElementsByClassName(classTitle, value);
 	}
-	return newArray
+	return result
 
 };
